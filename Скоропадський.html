@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вікторина: Внутрішня політика гетьмана Скоропадського</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            width: 100%;
+            background: #fffcf5;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            border: 1px solid #d9cdb8;
+            transition: all 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #2e241b;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subhead {
+            text-align: center;
+            font-size: 1rem;
+            color: #7a6a58;
+            margin-bottom: 32px;
+            border-bottom: 2px dashed #d9cdb8;
+            padding-bottom: 16px;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+            color: #5a4a3a;
+            font-size: 0.95rem;
+        }
+
+        .question-number {
+            background: #d9cdb8;
+            padding: 6px 16px;
+            border-radius: 40px;
+            color: #2e241b;
+            font-size: 0.9rem;
+        }
+
+        .score-display {
+            background: #2e241b;
+            color: #f5f0e6;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2e241b;
+            margin-bottom: 28px;
+            line-height: 1.4;
+            padding: 0 8px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            padding: 18px 22px;
+            background: #ffffff;
+            border: 2px solid #d9cdb8;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2e241b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            font-family: inherit;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #f0e9dd;
+            border-color: #b8a88f;
+            transform: scale(1.01);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .option-btn.selected-correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #1e4a2a;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        }
+
+        .option-btn.selected-wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #6e1e28;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .option-btn.correct-answer-highlight {
+            background: #d4edda;
+            border-color: #28a745;
+            font-weight: 600;
+        }
+
+        .feedback {
+            padding: 16px 20px;
+            border-radius: 16px;
+            background: #f0e9dd;
+            margin-bottom: 24px;
+            font-size: 1rem;
+            color: #3a3028;
+            border-left: 6px solid #b8a88f;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .feedback.correct-fb {
+            background: #e3f2e8;
+            border-left-color: #28a745;
+        }
+
+        .feedback.wrong-fb {
+            background: #fbe9eb;
+            border-left-color: #dc3545;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            background: #e8e0d0;
+            color: #2e241b;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #d9cdb8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: #2e241b;
+            color: #f5f0e6;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #4a3e32;
+        }
+
+        .btn-restart {
+            background: #b8a88f;
+            color: #1e1a16;
+        }
+
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-screen h2 {
+            font-size: 2.2rem;
+            color: #2e241b;
+            margin-bottom: 20px;
+        }
+
+        .result-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2e241b;
+            margin: 20px 0;
+            line-height: 1.2;
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            color: #5a4a3a;
+            margin-bottom: 40px;
+            padding: 0 20px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .question-text {
+                font-size: 1.15rem;
+            }
+
+            .option-btn {
+                font-size: 0.95rem;
+                padding: 14px 16px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .result-score {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container" id="quizContainer">
+        <!-- Main quiz screen -->
+        <div id="quizMain">
+            <h1>Внутрішня політика<br>гетьмана Павла Скоропадського</h1>
+            <div class="subhead">Історія України · 10 клас</div>
+
+            <div class="progress-bar">
+                <span class="question-number" id="questionCounter">Питання 1 з 10</span>
+                <span class="score-display" id="scoreDisplay">Бали: 0</span>
+            </div>
+
+            <div class="question-text" id="questionText">Завантаження...</div>
+
+            <div class="options" id="optionsContainer"></div>
+
+            <div class="feedback hidden" id="feedback"></div>
+
+            <div class="nav-buttons">
+                <button class="btn" id="prevBtn" disabled>← Назад</button>
+                <button class="btn btn-primary" id="nextBtn" disabled>Далі →</button>
+            </div>
+        </div>
+
+        <!-- Result screen -->
+        <div id="resultScreen" class="result-screen hidden">
+            <h2>Вікторину завершено!</h2>
+            <div class="result-score" id="finalScore">0 / 10</div>
+            <div class="result-message" id="finalMessage"></div>
+            <button class="btn btn-restart" id="restartBtn">Спробувати ще раз</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Дані вікторини — внутрішня політика Скоропадського
+            const questions = [
+                {
+                    question: "Який документ, підписаний гетьманом Скоропадським 29 квітня 1918 року, скасовував закони Центральної Ради та відновлював право приватної власності?",
+                    options: [
+                        "«Грамота до всього Українського Народу»",
+                        "«Універсал Української Народної Республіки»",
+                        "«Закон про тимчасовий державний устрій України»",
+                        "«Конституція Української Держави»"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Саме «Грамота до всього Українського Народу» оголошувала Скоропадського гетьманом, розпускала Центральну Раду та відновлювала приватну власність [citation:5]."
+                },
+                {
+                    question: "Як називався законодавчий акт, що визначав тимчасовий державний устрій Української Держави до скликання Сенату?",
+                    options: [
+                        "«Закони про тимчасовий державний устрій України»",
+                        "«Основний закон Української Держави»",
+                        "«Статут про гетьманську владу»",
+                        "«Положення про Український Сенат»"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Разом із Грамотою було підписано «Закони про тимчасовий державний устрій України», які діяли до созиву Сенату [citation:5]."
+                },
+                {
+                    question: "Яку назву держави було запроваджено замість «Українська Народна Республіка» згідно із законами Скоропадського?",
+                    options: [
+                        "«Українська Держава»",
+                        "«Гетьманщина»",
+                        "«Українська Республіка»",
+                        "«Малоросія»"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Офіційною назвою держави стала «Українська Держава» [citation:5]."
+                },
+                {
+                    question: "Що стало головною соціальною опорою режиму Скоропадського, на яку він розраховував?",
+                    options: [
+                        "Заможне селянство (так звані «казаки»)",
+                        "Міський пролетаріат",
+                        "Інтелігенція та студентство",
+                        "Колишні члени Центральної Ради"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Скоропадський ввів окрему категорію громадян — «казаків», фактично заможних селян, сподіваючись зробити їх соціальною базою своєї влади [citation:5]."
+                },
+                {
+                    question: "Хто очолив перший уряд (Раду Міністрів) Української Держави за гетьмана Скоропадського?",
+                    options: [
+                        "Федір Лизогуб",
+                        "Дмитро Дорошенко",
+                        "Микола Сахно-Устимович",
+                        "Володимир Винниченко"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Прем'єр-міністром став великий землевласник Федір Лизогуб, хоча кабінет був «бідний на націонал-патріотів» [citation:5]."
+                },
+                {
+                    question: "Який університет було відкрито за часів Гетьманату 1918 року (окрім Київського)?",
+                    options: [
+                        "Кам'янець-Подільський український університет",
+                        "Харківський університет",
+                        "Одеський університет",
+                        "Львівський університет"
+                    ],
+                    correctIndex: 0,
+                    explanation: "За часів Скоропадського було відкрито 2 державні українські університети — у Києві та Кам'янці-Подільському [citation:1]."
+                },
+                {
+                    question: "Хто став першим президентом Української академії наук, заснованої у Києві за Гетьманату?",
+                    options: [
+                        "Володимир Вернадський",
+                        "Михайло Грушевський",
+                        "Микола Василенко",
+                        "Агатангел Кримський"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Першим президентом УАН став академік Володимир Вернадський [citation:1]."
+                },
+                {
+                    question: "Який документ Скоропадського став формальною причиною для початку антигетьманського повстання (зокрема Директорії)?",
+                    options: [
+                        "«Грамота про федерацію з Росією» (14 листопада 1918)",
+                        "«Закон про відновлення приватної власності»",
+                        "«Наказ про розпуск Центральної Ради»",
+                        "«Статут про Український Сенат»"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Саме «федеративна грамота» від 14 листопада 1918 року, яка орієнтувалася на білу Росію, стала формальним приводом для антигетьманського повстання [citation:1]."
+                },
+                {
+                    question: "Що передбачала аграрна політика Скоропадського щодо великих землеволодінь?",
+                    options: [
+                        "Відновлення приватної власності з можливістю викупу землі для малоземельних",
+                        "Повна націоналізація всіх земель",
+                        "Розподіл землі порівну між усіма селянами",
+                        "Передача землі церкві"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Грамота відновлювала право приватної власності, але передбачала «розробку заходів» щодо отримання великих землеволодінь за плату та наділення землею малоземельних селян [citation:5]."
+                },
+                {
+                    question: "Яку посаду обіймав Дмитро Дорошенко в уряді Скоропадського?",
+                    options: [
+                        "Міністр закордонних справ",
+                        "Прем'єр-міністр",
+                        "Міністр освіти",
+                        "Міністр внутрішніх справ"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Дмитро Дорошенко був міністром закордонних справ — одним із небагатьох відомих українських діячів у кабінеті [citation:5]."
+                }
+            ];
+
+            // Стан вікторини
+            let currentIndex = 0;
+            let score = 0;
+            // answers[i] = { selected: index, isCorrect: bool, answered: bool }
+            let answers = questions.map(() => ({ selected: null, isCorrect: false, answered: false }));
+
+            // DOM елементи
+            const questionCounter = document.getElementById('questionCounter');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const feedback = document.getElementById('feedback');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const quizMain = document.getElementById('quizMain');
+            const resultScreen = document.getElementById('resultScreen');
+            const finalScore = document.getElementById('finalScore');
+            const finalMessage = document.getElementById('finalMessage');
+            const restartBtn = document.getElementById('restartBtn');
+
+            function updateScoreDisplay() {
+                scoreDisplay.textContent = `Бали: ${score}`;
+            }
+
+            function renderQuestion(index) {
+                const q = questions[index];
+                const answerState = answers[index];
+
+                // Оновлення лічильника та рахунку
+                questionCounter.textContent = `Питання ${index + 1} з ${questions.length}`;
+                updateScoreDisplay();
+
+                // Текст питання
+                questionText.textContent = q.question;
+
+                // Очищення контейнера опцій
+                optionsContainer.innerHTML = '';
+
+                // Створення кнопок
+                q.options.forEach((opt, optIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = opt;
+                    btn.dataset.index = optIdx;
+
+                    // Якщо питання вже відповідено — показуємо стан
+                    if (answerState.answered) {
+                        btn.disabled = true;
+
+                        // Позначаємо вибрану відповідь
+                        if (optIdx === answerState.selected) {
+                            if (answerState.isCorrect) {
+                                btn.classList.add('selected-correct');
+                            } else {
+                                btn.classList.add('selected-wrong');
+                            }
+                        }
+
+                        // Показуємо правильну відповідь, якщо була помилка
+                        if (optIdx === q.correctIndex && !answerState.isCorrect) {
+                            btn.classList.add('correct-answer-highlight');
+                        }
+                    } else {
+                        // Ще не відповіли — кнопки активні
+                        btn.addEventListener('click', () => handleOptionClick(index, optIdx));
+                    }
+
+                    optionsContainer.appendChild(btn);
+                });
+
+                // Налаштування зворотного зв'язку
+                if (answerState.answered) {
+                    feedback.classList.remove('hidden');
+                    if (answerState.isCorrect) {
+                        feedback.className = 'feedback correct-fb';
+                        feedback.innerHTML = `✅ <strong>Правильно!</strong> ${q.explanation}`;
+                    } else {
+                        feedback.className = 'feedback wrong-fb';
+                        feedback.innerHTML = `❌ <strong>Неправильно.</strong> ${q.explanation}`;
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                    feedback.innerHTML = '';
+                }
+
+                // Керування кнопками навігації
+                prevBtn.disabled = (index === 0);
+                
+                // Кнопка "Далі" активна, якщо на питання відповідено
+                if (answerState.answered) {
+                    nextBtn.disabled = false;
+                    if (index === questions.length - 1) {
+                        nextBtn.textContent = 'Завершити';
+                    } else {
+                        nextBtn.textContent = 'Далі →';
+                    }
+                } else {
+                    nextBtn.disabled = true;
+                    // Якщо це останнє питання і не відповідено — кнопка все одно неактивна
+                    // але текст залишаємо "Далі" або "Завершити"
+                    if (index === questions.length - 1) {
+                        nextBtn.textContent = 'Завершити';
+                    } else {
+                        nextBtn.textContent = 'Далі →';
+                    }
+                }
+            }
+
+            function handleOptionClick(questionIdx, selectedIdx) {
+                const q = questions[questionIdx];
+                const answerState = answers[questionIdx];
+
+                // Якщо вже відповіли — ігноруємо
+                if (answerState.answered) return;
+
+                const isCorrect = (selectedIdx === q.correctIndex);
+
+                // Оновлюємо стан
+                answerState.selected = selectedIdx;
+                answerState.isCorrect = isCorrect;
+                answerState.answered = true;
+
+                if (isCorrect) {
+                    score += 1;
+                }
+
+                // Перемальовуємо питання, щоб відобразити результат
+                renderQuestion(questionIdx);
+            }
+
+            function goToPrev() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    renderQuestion(currentIndex);
+                }
+            }
+
+            function goToNext() {
+                // Перевіряємо, чи поточне питання відповідено
+                if (!answers[currentIndex].answered) return;
+
+                if (currentIndex === questions.length - 1) {
+                    // Завершення
+                    showResults();
+                } else {
+                    currentIndex++;
+                    renderQuestion(currentIndex);
+                }
+            }
+
+            function showResults() {
+                quizMain.classList.add('hidden');
+                resultScreen.classList.remove('hidden');
+
+                finalScore.textContent = `${score} / ${questions.length}`;
+
+                let message = '';
+                if (score === questions.length) {
+                    message = 'Блискуче! Ти чудово знаєш внутрішню політику гетьмана Скоропадського.';
+                } else if (score >= 8) {
+                    message = 'Чудовий результат! Ти добре засвоїв тему.';
+                } else if (score >= 6) {
+                    message = 'Непогано! Але варто повторити окремі моменти.';
+                } else if (score >= 4) {
+                    message = 'Варто уважніше перечитати матеріал про Гетьманат 1918 року.';
+                } else {
+                    message = 'Тема потребує додаткового опрацювання. Спробуй ще раз після повторення!';
+                }
+
+                finalMessage.textContent = message;
+            }
+
+            function restartQuiz() {
+                // Скидання стану
+                currentIndex = 0;
+                score = 0;
+                answers = questions.map(() => ({ selected: null, isCorrect: false, answered: false }));
+
+                // Показ основного екрану
+                resultScreen.classList.add('hidden');
+                quizMain.classList.remove('hidden');
+
+                // Перемальовуємо перше питання
+                renderQuestion(0);
+            }
+
+            // Ініціалізація
+            function init() {
+                // Додаємо обробники подій
+                prevBtn.addEventListener('click', goToPrev);
+                nextBtn.addEventListener('click', goToNext);
+                restartBtn.addEventListener('click', restartQuiz);
+
+                // Рендеримо перше питання
+                renderQuestion(0);
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>
